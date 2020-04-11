@@ -1,6 +1,7 @@
 #*******************************************************************************
 #   Ledger App
 #   (c) 2017 Ledger
+#   (c) 2020 Kompose, Inc. adaptation for Klaytn
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -20,23 +21,45 @@ $(error Environment variable BOLOS_SDK is not set)
 endif
 include $(BOLOS_SDK)/Makefile.defines
 
-APP_LOAD_PARAMS= --curve ed25519 --path "44'/1234'" --appFlags 0x240 $(COMMON_LOAD_PARAMS)
+APP_LOAD_PARAMS= --curve secp256k1 $(COMMON_LOAD_PARAMS)
 
 APPVERSION_M=1
 APPVERSION_N=0
 APPVERSION_P=0
 APPVERSION=$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)
-APPNAME = "Boilerplate"
+APP_LOAD_FLAGS= --appFlags 0x240
 
-DEFINES += $(DEFINES_LIB)
-
-
-ifeq ($(TARGET_NAME),TARGET_NANOX)
-	ICONNAME=icons/nanox_app_boilerplate.gif
-else
-	ICONNAME=icons/nanos_app_boilerplate.gif
+ifeq ($(CHAIN),)
+CHAIN=klaytn
 endif
 
+ifeq ($(CHAIN),klaytn)
+APP_LOAD_PARAMS += --path "44'/8217'"
+DEFINES += CHAINID_UPCASE=\"KLAYTN\" CHAINID_COINNAME=\"KLAY\" CHAIN_KIND=CHAIN_KIND_KLAYTN CHAIN_ID=8217
+APPNAME = "Klaytn CE" # Klaytn Community Edition
+APP_LOAD_FLAGS= --appFlags 0xa40
+else ifeq ($(CHAIN),klaytn_testnet)
+APP_LOAD_PARAMS += --path "44'/8217'"
+DEFINES += CHAINID_UPCASE=\"KLAYTN_BAOBAB\" CHAINID_COINNAME=\"KLAY\" CHAIN_KIND=CHAIN_KIND_KLAYTN_TESTNET CHAIN_ID=1001
+APPNAME = "Klaytn Baobab"
+else
+ifeq ($(filter clean,$(MAKECMDGOALS)),)
+$(error Unsupported CHAIN - use klaytn, klaytn_testnet)
+endif
+endif
+
+APP_LOAD_PARAMS += $(APP_LOAD_FLAGS)
+DEFINES += $(DEFINES_LIB)
+
+ifeq ($(TARGET_NAME),TARGET_BLUE)
+ICONNAME=icons/blue_app_$(CHAIN).gif
+else
+ifeq ($(TARGET_NAME), TARGET_NANOX)
+ICONNAME=icons/nanox_app_$(CHAIN).gif
+else
+ICONNAME=icons/nanos_app_$(CHAIN).gif
+endif
+endif
 
 ################
 # Default rule #
@@ -54,16 +77,17 @@ DEFINES   += LEDGER_MAJOR_VERSION=$(APPVERSION_M) LEDGER_MINOR_VERSION=$(APPVERS
 
 # U2F
 DEFINES   += HAVE_U2F HAVE_IO_U2F
-DEFINES   += U2F_PROXY_MAGIC=\"BOIL\"
+DEFINES   += U2F_PROXY_MAGIC=\"klaytn\"
 DEFINES   += USB_SEGMENT_SIZE=64
 DEFINES   += BLE_SEGMENT_SIZE=32 #max MTU, min 20
 
-WEBUSB_URL     = www.ledgerwallet.com
-DEFINES       += HAVE_WEBUSB WEBUSB_URL_SIZE_B=$(shell echo -n $(WEBUSB_URL) | wc -c) WEBUSB_URL=$(shell echo -n $(WEBUSB_URL) | sed -e "s/./\\\'\0\\\',/g")
+#WEBUSB_URL     = www.ledgerwallet.com
+#DEFINES       += HAVE_WEBUSB WEBUSB_URL_SIZE_B=$(shell echo -n $(WEBUSB_URL) | wc -c) WEBUSB_URL=$(shell echo -n $(WEBUSB_URL) | sed -e "s/./\\\'\0\\\',/g")
+
+DEFINES   += HAVE_WEBUSB WEBUSB_URL_SIZE_B=0 WEBUSB_URL=""
 
 DEFINES   += UNUSED\(x\)=\(void\)x
 DEFINES   += APPVERSION=\"$(APPVERSION)\"
-
 
 ifeq ($(TARGET_NAME),TARGET_NANOX)
 DEFINES   	  += IO_SEPROXYHAL_BUFFER_SIZE_B=300
@@ -80,9 +104,6 @@ else
 DEFINES   	  += IO_SEPROXYHAL_BUFFER_SIZE_B=128
 endif
 
-# Both nano S and X benefit from the flow.
-DEFINES       += HAVE_UX_FLOW
-
 # Enabling debug PRINTF
 DEBUG = 0
 ifneq ($(DEBUG),0)
@@ -95,6 +116,8 @@ ifneq ($(DEBUG),0)
 else
         DEFINES   += PRINTF\(...\)=
 endif
+
+DEFINES   += HAVE_TOKENS_LIST
 
 ##############
 #  Compiler  #
@@ -128,13 +151,15 @@ LDLIBS   += -lm -lgcc -lc
 include $(BOLOS_SDK)/Makefile.glyphs
 
 ### variables processed by the common makefile.rules of the SDK to grab source files and include dirs
-APP_SOURCE_PATH  += src
+APP_SOURCE_PATH  += src_common src
 SDK_SOURCE_PATH  += lib_stusb lib_stusb_impl lib_u2f
 
 ifeq ($(TARGET_NAME),TARGET_NANOX)
 SDK_SOURCE_PATH  += lib_blewbxx lib_blewbxx_impl
 SDK_SOURCE_PATH  += lib_ux
 endif
+
+DEFINES          += HAVE_UX_FLOW
 
 load: all
 	python -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
@@ -149,7 +174,7 @@ release: all
 	export APP_LOAD_PARAMS_EVALUATED="$(shell printf '\\"%s\\" ' $(APP_LOAD_PARAMS))"; \
 	cat load-template.sh | envsubst > load.sh
 	chmod +x load.sh
-	tar -zcf boilerplate-ledger-app-$(APPVERSION).tar.gz load.sh bin/app.hex
+	tar -zcf klaytn-ledger-app-$(APPVERSION).tar.gz load.sh bin/app.hex
 	rm load.sh
 
 # import generic rules from the sdk
@@ -158,7 +183,5 @@ include $(BOLOS_SDK)/Makefile.rules
 #add dependency on custom makefile filename
 dep/%.d: %.c Makefile
 
-
-
 listvariants:
-	@echo VARIANTS COIN boilerplate
+	@echo VARIANTS CHAIN klaytn klaytn_testnet
