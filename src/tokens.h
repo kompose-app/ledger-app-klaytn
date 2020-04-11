@@ -16,19 +16,25 @@
  *  limitations under the License.
  ********************************************************************************/
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _TOKENS_H_
+#define _TOKENS_H_
 
 #include <stdint.h>
 
-#include "uint256.h"
+typedef struct tokenDefinition_t {
+  uint8_t address[20];
+  uint8_t ticker[10];
+  uint8_t decimals;
+} tokenDefinition_t;
 
-void array_hexstr(char *strbuf, const void *bin, unsigned int len);
+#ifdef HAVE_TOKENS_LIST
 
-void convertUint256BE(uint8_t *data, uint32_t length, uint256_t *target);
+#define NUM_TOKENS_KLAYTN 0
+#define NUM_TOKENS_KLAYTN_TESTNET 0
 
-int local_strchr(char *string, char ch);
+extern tokenDefinition_t const TOKENS_KLAYTN[NUM_TOKENS_KLAYTN];
+extern tokenDefinition_t const TOKENS_KLAYTN_TESTNET[NUM_TOKENS_KLAYTN_TESTNET];
 
-uint32_t getV(txContent_t *txContent);
+#endif /* HAVE_TOKENS_LIST */
 
-#endif /* _UTILS_H_ */
+#endif /* _TOKENS_H_ */

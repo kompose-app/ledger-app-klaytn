@@ -1,138 +1,72 @@
-#include "os.h"
-#include "cx.h"
-#include <stdbool.h>
-#include <stdlib.h>
-#include "utils.h"
-#include "menu.h"
+/*******************************************************************************
+ *   Ledger Klaytn App
+ *   (c) 2016-2019 Ledger
+ *   (c) 2020 Kompose, Inc. adaptation for Klaytn
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ********************************************************************************/
 
-#define ACCOUNT_ADDRESS_PREFIX 1
+#include <stdint.h>
+#include <string.h>
 
-static const char BASE_58_ALPHABET[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-                                        'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q',
-                                        'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-                                        'h', 'i', 'j', 'k', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-                                        'w', 'x', 'y', 'z'};
+#include "klayUstream.h"
+#include "uint256.h"
 
-static unsigned char encodeBase58(unsigned char WIDE *in, unsigned char length,
-                           unsigned char *out, unsigned char maxoutlen) {
-    unsigned char tmp[164];
-    unsigned char buffer[164];
-    unsigned char j;
-    unsigned char startAt;
-    unsigned char zeroCount = 0;
-    if (length > sizeof(tmp)) {
-        THROW(INVALID_PARAMETER);
-    }
-    os_memmove(tmp, in, length);
-    while ((zeroCount < length) && (tmp[zeroCount] == 0)) {
-        ++zeroCount;
-    }
-    j = 2 * length;
-    startAt = zeroCount;
-    while (startAt < length) {
-        unsigned short remainder = 0;
-        unsigned char divLoop;
-        for (divLoop = startAt; divLoop < length; divLoop++) {
-            unsigned short digit256 = (unsigned short)(tmp[divLoop] & 0xff);
-            unsigned short tmpDiv = remainder * 256 + digit256;
-            tmp[divLoop] = (unsigned char)(tmpDiv / 58);
-            remainder = (tmpDiv % 58);
-        }
-        if (tmp[startAt] == 0) {
-            ++startAt;
-        }
-        buffer[--j] = (unsigned char)BASE_58_ALPHABET[remainder];
-    }
-    while ((j < (2 * length)) && (buffer[j] == BASE_58_ALPHABET[0])) {
-        ++j;
-    }
-    while (zeroCount-- > 0) {
-        buffer[--j] = BASE_58_ALPHABET[0];
-    }
-    length = 2 * length - j;
-    if (maxoutlen < length) {
-        THROW(EXCEPTION_OVERFLOW);
-    }
-    os_memmove(out, (buffer + j), length);
-    return length;
+static const unsigned char hex_digits[] = {'0', '1', '2', '3', '4', '5',
+                                           '6', '7', '8', '9', 'A', 'B',
+                                           'C', 'D', 'E', 'F'};
+
+void array_hexstr(char *strbuf, const void *bin, unsigned int len) {
+  while (len--) {
+    *strbuf++ = hex_digits[((*((char *)bin)) >> 4) & 0xF];
+    *strbuf++ = hex_digits[(*((char *)bin)) & 0xF];
+    bin = (const void *)((unsigned int)bin + 1);
+  }
+  *strbuf = 0; // EOS
 }
 
-void getAddressStringFromBinary(uint8_t *publicKey, char *address) {
-    uint8_t buffer[36];
-    uint8_t hashAddress[32];
-
-    os_memmove(buffer, publicKey, 32);
-    cx_hash_sha256(buffer, 32, hashAddress, 32);
-    cx_hash_sha256(hashAddress, 32, hashAddress, 32);
-    os_memmove(buffer + 32, hashAddress, 4);
-
-    snprintf(address, sizeof(address), "lol");
-    address[encodeBase58(buffer, 36, (unsigned char*)address + 3, 51) + 3] = '\0';
+void convertUint256BE(uint8_t *data, uint32_t length, uint256_t *target) {
+  uint8_t tmp[32];
+  os_memset(tmp, 0, 32);
+  os_memmove(tmp + 32 - length, data, length);
+  readu256BE(tmp, target);
 }
 
-void getPublicKey(uint32_t accountNumber, uint8_t *publicKeyArray) {
-    cx_ecfp_private_key_t privateKey;
-    cx_ecfp_public_key_t publicKey;
-
-    getPrivateKey(accountNumber, &privateKey);
-    cx_ecfp_generate_pair(CX_CURVE_Ed25519, &publicKey, &privateKey, 1);
-    os_memset(&privateKey, 0, sizeof(privateKey));
-
-    for (int i = 0; i < 32; i++) {
-        publicKeyArray[i] = publicKey.W[64 - i];
+int local_strchr(char *string, char ch) {
+  unsigned int length = strlen(string);
+  unsigned int i;
+  for (i = 0; i < length; i++) {
+    if (string[i] == ch) {
+      return i;
     }
-    if ((publicKey.W[32] & 1) != 0) {
-        publicKeyArray[31] |= 0x80;
-    }
+  }
+  return -1;
 }
 
-uint32_t readUint32BE(uint8_t *buffer) {
-  return (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3]);
-}
-
-static const uint32_t HARDENED_OFFSET = 0x80000000;
-
-static const uint32_t derivePath[BIP32_PATH] = {
-  44 | HARDENED_OFFSET,
-  1234 | HARDENED_OFFSET,
-  0 | HARDENED_OFFSET,
-  0 | HARDENED_OFFSET,
-  0 | HARDENED_OFFSET
-};
-
-void getPrivateKey(uint32_t accountNumber, cx_ecfp_private_key_t *privateKey) {
-    uint8_t privateKeyData[32];
-    uint32_t bip32Path[BIP32_PATH];
-
-    os_memmove(bip32Path, derivePath, sizeof(derivePath));
-    bip32Path[2] = accountNumber | HARDENED_OFFSET;
-    PRINTF("BIP32: %.*H\n", BIP32_PATH*4, bip32Path);
-    os_perso_derive_node_bip32_seed_key(HDW_ED25519_SLIP10, CX_CURVE_Ed25519, bip32Path, BIP32_PATH, privateKeyData, NULL, NULL, 0);
-    cx_ecfp_init_private_key(CX_CURVE_Ed25519, privateKeyData, 32, privateKey);
-    os_memset(privateKeyData, 0, sizeof(privateKeyData));
-}
-
-void sendResponse(uint8_t tx, bool approve) {
-    G_io_apdu_buffer[tx++] = approve? 0x90 : 0x69;
-    G_io_apdu_buffer[tx++] = approve? 0x00 : 0x85;
-    // Send back the response, do not restart the event loop
-    io_exchange(CHANNEL_APDU | IO_RETURN_AFTER_TX, tx);
-    // Display back the original UX
-    ui_idle();
-}
-
-unsigned int ui_prepro(const bagl_element_t *element) {
-    unsigned int display = 1;
-    if (element->component.userid > 0) {
-        display = (ux_step == element->component.userid - 1);
-        if (display) {
-            if (element->component.userid == 1) {
-                UX_CALLBACK_SET_INTERVAL(2000);
-            }
-            else {
-                UX_CALLBACK_SET_INTERVAL(MAX(3000, 1000 + bagl_label_roundtrip_duration_ms(element, 7)));
-            }
-        }
-    }
-    return display;
+uint32_t getV(txContent_t *txContent) {
+  uint32_t v = 0;
+  if (txContent->vLength == 1) {
+    v = txContent->v[0];
+  } else if (txContent->vLength == 2) {
+    v = (txContent->v[0] << 8) | txContent->v[1];
+  } else if (txContent->vLength == 3) {
+    v = (txContent->v[0] << 16) | (txContent->v[1] << 8) | txContent->v[2];
+  } else if (txContent->vLength == 4) {
+    v = (txContent->v[0] << 24) | (txContent->v[1] << 16) |
+        (txContent->v[2] << 8) | txContent->v[3];
+  } else if (txContent->vLength != 0) {
+    PRINTF("Unexpected v format\n");
+    THROW(EXCEPTION);
+  }
+  return v;
 }

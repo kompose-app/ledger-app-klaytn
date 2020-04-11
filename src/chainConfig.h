@@ -16,19 +16,28 @@
  *  limitations under the License.
  ********************************************************************************/
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _CHAIN_CONFIG_H_
+#define _CHAIN_CONFIG_H_
 
 #include <stdint.h>
 
-#include "uint256.h"
+#include "os.h"
 
-void array_hexstr(char *strbuf, const void *bin, unsigned int len);
+typedef enum chain_kind_e {
+  CHAIN_KIND_KLAYTN,
+  CHAIN_KIND_KLAYTN_TESTNET,
+} chain_kind_t;
 
-void convertUint256BE(uint8_t *data, uint32_t length, uint256_t *target);
+typedef struct chain_config_s {
+  const char *coinName; // ticker
+  uint32_t chainId;
+  chain_kind_t kind;
+#ifdef TARGET_BLUE
+  const char *header_text;
+  unsigned int color_header;
+  unsigned int color_dashboard;
+#endif // TARGET_BLUE
 
-int local_strchr(char *string, char ch);
+} chain_config_t;
 
-uint32_t getV(txContent_t *txContent);
-
-#endif /* _UTILS_H_ */
+#endif /* _CHAIN_CONFIG_H_ */
