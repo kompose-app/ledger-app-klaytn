@@ -16,19 +16,12 @@
  *  limitations under the License.
  ********************************************************************************/
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifdef HAVE_TOKENS_LIST
 
-#include <stdint.h>
+#include "tokens.h"
 
-#include "uint256.h"
+const tokenDefinition_t const TOKENS_KLAYTN[NUM_TOKENS_KLAYTN] = {};
+const tokenDefinition_t const TOKENS_KLAYTN_TESTNET[NUM_TOKENS_KLAYTN_TESTNET] =
+    {};
 
-void array_hexstr(char *strbuf, const void *bin, unsigned int len);
-
-void convertUint256BE(uint8_t *data, uint32_t length, uint256_t *target);
-
-int local_strchr(char *string, char ch);
-
-uint32_t getV(txContent_t *txContent);
-
-#endif /* _UTILS_H_ */
+#endif
