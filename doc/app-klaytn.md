@@ -1,27 +1,26 @@
-Klaytn application : Common Technical Specifications 
-=======================================================
+# Klaytn Ledger App: Common Technical Specifications 
 
 Application version 1.0.0 
 
-## 1.0
+### 1.0
   - Initial release for Klaytn
   - Returns App Configuration
   - Return the chain code with Public Address
   - Sign Klay Personal Message
   - KCT tokens information and defines
 
-## TODO
+### TODO
 
   - Sign non-legacy Klaytn transactions
   - Fee delegated transactions
   - Klaytn Accounts
 
-## About
+### About
 
 This application describes the APDU messages interface to communicate with the
 Klaytn application. 
 
-The application covers the following functionalities : 
+The application covers the following functionalities:
 
   - Retrieve a public Klaytn address given a BIP 32 path  Sign a basic Klaytn
   - transaction given a BIP 32 path Provide callbacks to validate the data
@@ -42,41 +41,31 @@ The address can be optionally checked on the device before being returned.
 
 #### Coding
 
-'Command'
+_Command_
 
-[width="80%"]
-|==========================================================================================
-| *CLA* | *INS*  | *P1*               | *P2*       | *Lc*     | *Le*   
-|   E0  |   02   |  00 : return address
 
-                    01 : display address and confirm before returning
-                                      |   00 : do not return the chain code
+| **CLA** | **INS**  | **P1**               | **P2**       | **Lc**     | **Le**
+| ------- | -------- | ---------------------| ------------ | ---------- | ------ |
+|   E0  |   02   |  <p>`00`: return address<br/>`01`: display address and confirm before returning</p> | <p>`00`: do not return the chain code<br/>`01`: return the chain code</p> | variable | variable
 
-                                          01 : return the chain code | variable | variable
-|==========================================================================================
+_Input data_
 
-'Input data'
-
-[width="80%"]
-|==============================================================
-| *Description*                                     | *Length*
+| **Description**                                     | **Length**
+| ------------- | ------------- |
 | Number of BIP 32 derivations to perform (max 10)  | 1
 | First derivation index (big endian)               | 4
 | ...                                               | 4
 | Last derivation index (big endian)                | 4
-|==============================================================
 
-'Output data'
+_Output data_
 
-[width="80%"]
-|==============================================================
-| *Description*                                     | *Length*
+| **Description**                                     | **Length**
+| ------------- | ------------- |
 | Public Key length                                 | 1
 | Uncompressed Public Key                           | var
 | Klaytn address length                             | 1
 | Klaytn address                                    | var
 | Chain code if requested                           | 32
-|==============================================================
 
 ### Sign Klaytn Legacy Transaction
 
@@ -94,46 +83,39 @@ The input data is the RLP encoded transaction.
 
 #### Coding
 
-'Command'
+_Command_
 
-[width="80%"]
-|====================================================================
-| *CLA* | *INS*  | *P1*               | *P2*       | *Lc*     | *Le* 
-|   E0  |   04   |  00 : first transaction data block
 
-                    80 : subsequent transaction data block
-                                      |   00 | variable | variable
-|====================================================================
+| **CLA** | **INS**  | **P1**               | **P2**       | **Lc**     | **Le** 
+| ------- | -------- | ---------------------| ------------ | ---------- | ------ |
+|   E0  |   04   |  <p>`00`: first transaction data block<br/>`80`: subsequent transaction data block</p> |   00 | variable | variable |
 
-'Input data (first transaction data block)'
 
-[width="80%"]
-|================================================================
-| *Description*                                       | *Length*
+_Input data (first transaction data block)_
+
+| **Description**                                       | **Length**
+| ------------- | ------------- |
 | Number of BIP 32 derivations to perform (max 10)    | 1
 | First derivation index (big endian)                 | 4
 | ...                                                 | 4
 | Last derivation index (big endian)                  | 4
 | RLP transaction chunk                               | variable
-|================================================================
 
-'Input data (other transaction data block)'
 
-[width="80%"]
-|================================================================
-| *Description*                                       | *Length*
+_Input data (other transaction data block)_
+
+
+| **Description**                                       | **Length**
+| ------------- | ------------- |
 | RLP transaction chunk                               | variable
-|================================================================
 
-'Output data'
+_Output data_
 
-[width="80%"]
-|=================================================================
-| *Description*                                        | *Length*
+| **Description**                                        | **Length**
+| ------------- | ------------- |
 | v                                                    | 1
 | r                                                    | 32
 | s                                                    | 32
-|=================================================================
 
 ### Sign Klaytn Personal Message
 
@@ -150,47 +132,37 @@ maximum data chunks
 
 #### Coding
 
-'Command'
+_Command_
 
-[width="80%"]
-|========================================================================
-| *CLA* | *INS*  | *P1*               | *P2*       | *Lc*     | *Le*   
-|   E0  |   08   |  00 : first message data block
 
-                    80 : subsequent message data block
-                                      |   00       | variable | variable
-|========================================================================
+| **CLA** | **INS**  | **P1**               | **P2**       | **Lc**     | **Le**   
+| ------- | -------- | ---------------------| ------------ | ---------- | ------ |
+|   E0  |   08   |  <p>`00`: first message data block<br/>`80`: subsequent message data block</p>|   00       | variable | variable|
 
-'Input data (first message data block)'
+_Input data (first message data block)_
 
-[width="80%"]
-|==============================================================
-| *Description*                                    | *Length*
+| **Description**                                    | **Length**
+| ------------- | ------------- |
 | Number of BIP 32 derivations to perform (max 10) | 1
 | First derivation index (big endian)              | 4
 | ...                                              | 4
 | Last derivation index (big endian)               | 4
 | Message length                                   | 4
 | Message chunk                                    | variable
-|==============================================================
 
-'Input data (other transaction data block)'
+_Input data (other transaction data block)_
 
-[width="80%"]
-|=============================================================
-| *Description*                                    | *Length*
+| **Description**                                    | **Length**
+| ------------- | ------------- |
 | Message chunk                                    | variable
-|=============================================================
 
-'Output data'
+_Output data_
 
-[width="80%"]
-|=============================================================
-| *Description*                                    | *Length*
+| **Description**                                    | **Length**
+| ------------- | ------------- |
 | v                                                | 1
 | r                                                | 32
 | s                                                | 32
-|=============================================================
 
 ### Provide KCT Token Information
 
@@ -205,32 +177,31 @@ user if necessary, as marked in GET APP CONFIGURATION flags.
 
 The signature is computed on 
 
-``` ticker || address || number of decimals (uint4be) || chainId (uint4be) ```
+```
+  ticker || address || number of decimals (uint4be) || chainId (uint4be)
+```
 
 #### Coding
 
-'Command'
+_Command_
 
-[width="80%"]
-|====================================================================
-| *CLA* | *INS*  | *P1*               | *P2*       | *Lc*     | *Le* 
+| **CLA** | **INS**  | **P1**               | **P2**       | **Lc**     | **Le** 
+| ------- | -------- | ---------------------| ------------ | ---------- | ------ |
 |   E0  |   0A   |  00   |   00       | variable | 00
-|====================================================================
 
-'Input data'
 
-[width="80%"]
-|====================================================
-| *Description*                           | *Length*
+_Input data_
+
+| **Description**                           | **Length**
+| ------------- | ------------- |
 | Length of KCT ticker                    | 1
 | KCT ticker                              | variable
 | KCT contract address                    | 20
 | Number of decimals (big endian encoded) | 4
 | Chain ID (big endian encoded)           | 4
 | Token information signature             | variable
-|====================================================
 
-'Output data'
+_Output data_
 
 None
 
@@ -242,32 +213,24 @@ This command returns specific application configuration
 
 #### Coding
 
-'Command'
+_Command_
 
-[width="80%"]
-|====================================================================
-| *CLA* | *INS*  | *P1*               | *P2*       | *Lc*     | *Le* 
+| **CLA** | **INS**  | **P1**               | **P2**       | **Lc**     | **Le** 
+| ------- | -------- | ---------------------| ------------ | ---------- | ------ |
 |   E0  |   06   |  00                |   00       | 00       | 04
-|====================================================================
 
-'Input data'
+_Input data_
 
 None
 
-'Output data'
+_Output data_
 
-[width="80%"]
-|================================================================================
-| *Description*                                                       | *Length*
-| Flags            
-        0x01 : Arbitrary data signature enabled by user
-
-        0x02 : KCT token information needs to be provided externally
-                                                                      | 01
+| **Description**                                                       | **Length**
+| ------------- | ------------- |
+| <p>Flags<br />`01`: Arbitrary data signature enabled by user<br />`02`: KCT token information needs to be provided externally</p> | 01
 | Application major version                                           | 01
 | Application minor version                                           | 01
 | Application patch version                                           | 01
-|================================================================================
 
 ## Transport protocol
 
@@ -277,16 +240,14 @@ Ledger APDUs requests and responses are encapsulated using a flexible protocol
 allowing to fragment large payloads over different underlying transport
 mechanisms. 
 
-The common transport header is defined as follows : 
+The common transport header is defined as follows: 
 
-[width="80%"]
-|===================================================
-| *Description*                          | *Length*
+| **Description**                          | **Length**
+| ------------- | ------------- |
 | Communication channel ID (big endian)  | 2
 | Command tag                            | 1
 | Packet sequence index (big endian)     | 2
 | Payload                                | var
-|===================================================
 
 The Communication channel ID allows commands multiplexing over the same physical
 link. It is not used for the time being, and should be set to `0101` to avoid
@@ -300,11 +261,10 @@ payloads. The first fragment index is `0x00`.
 
 ### APDU Command payload encoding
 
-APDU Command payloads are encoded as follows :
+APDU Command payloads are encoded as follows:
 
-[width="80%"]
-|======================================
-| *Description*             | *Length*
+| **Description**             | **Length**
+| ------------- | ------------- |
 | APDU length (big endian)  | 2
 | APDU CLA                  | 1
 | APDU INS                  | 1
@@ -312,29 +272,24 @@ APDU Command payloads are encoded as follows :
 | APDU P2                   | 1
 | APDU length               | 1
 | Optional APDU data        | var
-|======================================
 
 APDU payload is encoded according to the APDU case 
 
-[width="80%"]
-|=======================================================================================
-| Case Number  | *Lc* | *Le* | Case description
+| Case Number  | **Lc** | **Le** | Case description |
+| ------------ | ------ | -------| ---------------- |
 |   1          |  0   |  0   | No data in either direction - L is set to 00
 |   2          |  0   |  !0  | Input Data present, no Output Data - L is set to Lc
 |   3          |  !0  |  0   | Output Data present, no Input Data - L is set to Le
 |   4          |  !0  |  !0  | Both Input and Output Data are present - L is set to Lc
-|=======================================================================================
 
 ### APDU Response payload encoding
 
-APDU Response payloads are encoded as follows :
+APDU Response payloads are encoded as follows:
 
-[width="80%"]
-|===============================================
-| *Description*                      | *Length*
+| **Description**                      | **Length**
+| ------------- | ------------- |
 | APDU response length (big endian)  | 2
 | APDU response data and Status Word | var
-|===============================================
 
 ### USB mapping
 
@@ -347,15 +302,14 @@ The following standard Status Words are returned for all APDUs - some specific
 Status Words can be used for specific commands and are mentioned in the command
 description.
 
-'Status Words'
+_Status Words_
 
-[width="80%"]
-|==============================================================
-| *SW*     | *Description*
+| **SW**     | **Description**
+| ------------- | ------------- |
 |   6700   | Incorrect length
 |   6982   | Security status not satisfied (Canceled by user)
 |   6A80   | Invalid data
 |   6B00   | Incorrect parameter P1 or P2
 |   6Fxx   | Technical problem (Internal error, please report)
 |   9000   | Normal ending of the command
-|==============================================================
+

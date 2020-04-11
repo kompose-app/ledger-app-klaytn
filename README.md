@@ -42,7 +42,7 @@ make delete
 
 ## Documentation
 
-This follows the specification available in the [`klaytn.asc`](https://github.com/kompose-app/ledger-app-klaytn/blob/master/doc/klaytn.asc).
+This follows the specification available in the [`app-klaytn.md`](https://github.com/kompose-app/ledger-app-klaytn/blob/master/doc/app-klaytn.md).
 
 ## License
 
