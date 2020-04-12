@@ -10,11 +10,6 @@ export type TokenInfo = {
   data: Buffer
 };
 
-type _Cached = {
-  byContract: string => ?TokenInfo,
-  list: () => TokenInfo[]
-};
-
 /**
  * Klaytn KCT Tokens
  *
@@ -43,7 +38,7 @@ export default class KCT {
   }
 
   // this internal get() will lazy load and cache the data from the KCT data blob
-  get(): _Cached {
+  get() {
     return (() => {
       let cache;
       return () => {
@@ -84,7 +79,7 @@ export default class KCT {
         }
         const api = {
           list: () => entries,
-          byContract: contractAddress => byContract[contractAddress]
+          byContract: (contractAddress: string) => byContract[contractAddress]
         };
         cache = api;
         return api;
