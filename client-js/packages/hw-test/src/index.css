@@ -1,0 +1,11 @@
+.result {
+	height: 100px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.error {
+	height: 100px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

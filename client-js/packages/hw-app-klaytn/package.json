@@ -1,0 +1,52 @@
+{
+  "name": "@kompose-app/hw-app-klaytn",
+  "version": "1.0.0",
+  "description": "Ledger Hardware Wallet Klaytn Application API",
+  "keywords": [
+    "Ledger",
+    "LedgerWallet",
+    "Klaytn",
+    "klay",
+    "NanoS",
+    "Blue",
+    "Hardware Wallet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kompose-app/ledger-app-klaytn"
+  },
+  "bugs": {
+    "url": "https://github.com/kompose-app/ledger-app-klaytn/issues"
+  },
+  "homepage": "https://github.com/kompose-app/ledger-app-klaytn",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/Klaytn.js",
+  "module": "lib-es/Klaytn.js",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@ledgerhq/hw-transport": "^5.13.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "flow-bin": "^0.122.0",
+    "flow-typed": "^3.1.0"
+  },
+  "scripts": {
+    "flow": "flow",
+    "clean": "bash ../../script/clean.sh",
+    "build": "bash ../../script/build.sh",
+    "watch": "bash ../../script/watch.sh",
+    "doc": "bash ../../script/doc.sh"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-flow"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
+    ]
+  }
+}
