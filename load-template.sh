@@ -1,5 +1,5 @@
 #!/bin/sh
 
-pip install ledgerblue
+pip3 install ledgerblue
 
-python -m ledgerblue.loadApp $APP_LOAD_PARAMS_EVALUATED
+python3 -m ledgerblue.loadApp $APP_LOAD_PARAMS_EVALUATED
