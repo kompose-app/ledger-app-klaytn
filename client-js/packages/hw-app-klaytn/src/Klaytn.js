@@ -46,10 +46,20 @@ export default class Klaytn {
         "provideKctTokenInformation",
         "signTransaction",
         "signPersonalMessage",
-        "getAppConfiguration"
+        "getAppConfiguration",
+        "transportSend"
       ],
       scrambleKey
     );
+  }
+
+  /**
+   * transportSend allows to exchange raw APDU payloads using internal transport.
+   * @param APDU data buffer to send
+   * @return APDU response data buffer
+   */
+  transportSend(data: Buffer): Promise<Buffer> {
+    return this.transport.send(data);
   }
 
   /**

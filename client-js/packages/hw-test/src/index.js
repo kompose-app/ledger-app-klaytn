@@ -115,6 +115,48 @@ class App extends Component {
     }
   };
 
+  onAppInstall = async () => {
+    try {
+      this.showProcessing();
+      let klay = await this.createKlaytn(90000);
+
+      if (!window["WebSocket"]) {
+        throw "Your browser doesn't support WebSockets";
+      }
+
+      var socket = new WebSocket(
+        "ws://localhost:8080/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
+      );
+
+      socket.onclose = _event => {
+        this.setState({ result: "Connection closed." });
+      };
+
+      socket.onerror = e => {
+        throw e;
+      };
+
+      socket.onmessage = function(evt) {
+        if (!evt.isTrusted) {
+          throw "messages from websocket cannot be trusted";
+        }
+
+        let adpuIn = Buffer.from(evt.data, "hex");
+        klay.transport.exchange(adpuIn).then(
+          adpuOut => {
+            const adpuOutHex = adpuOut.toString("hex");
+            socket.send(adpuOutHex);
+          },
+          e => {
+            throw e;
+          }
+        );
+      };
+    } catch (error) {
+      this.setState({ error });
+    }
+  };
+
   onMessageChanged = async event => {
     this.setState({ message: event.target.value });
   };
@@ -141,6 +183,14 @@ class App extends Component {
             <br />
           </code>
         </pre>
+
+        <div>
+          <h2>Install Ledger App</h2>
+          <p>Before continuing you must install app.</p>
+          <a href="#output" className="button" onClick={this.onAppInstall}>
+            Install
+          </a>
+        </div>
 
         <div>
           <h2>Simple functions</h2>
