@@ -59,7 +59,13 @@ export default class Klaytn {
    * @return APDU response data buffer
    */
   apduExchange(data: Buffer): Promise<Buffer> {
-    return this.transport.exchange(data);
+    if (!data || data.length < 4) {
+      return;
+    }
+
+    return this.transport.send(
+      data[0], data[1], data[2], data[3], data.slice(4)
+    );
   }
 
   /**

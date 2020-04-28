@@ -3,6 +3,7 @@ import "./index.css";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
+import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { listen } from "@ledgerhq/logs";
 import Klaytn from "@kompose-app/hw-app-klaytn";
 
@@ -39,13 +40,13 @@ class App extends Component {
   createKlaytn = async (timeout?: number = 30000): Klaytn => {
     const transport = await TransportU2F.create();
     transport.setExchangeTimeout(timeout);
-    listen(log => console.log(log.type + ": " + log.message));
     return new Klaytn(transport);
   };
 
   onGetAddress = async () => {
     try {
       this.showProcessing();
+
       const klay = await this.createKlaytn();
       const path = "44'/8217'/0'/0/0";
       const { publicKey, address, chainCode } = await klay.getAddress(
@@ -86,7 +87,6 @@ class App extends Component {
       const klay = await this.createKlaytn(90000);
       const path = "44'/8217'/0'/0/0";
       const msgHex = Buffer.from(this.state.message).toString("hex");
-      console.log("signing", this.state.message);
       const { v, r, s } = await klay.signPersonalMessage(path, msgHex);
       const resultText = "[V=" + v + "],[R=" + r + "],[S=" + s + "]";
       this.setState({ result: resultText });
@@ -118,14 +118,21 @@ class App extends Component {
   onAppInstall = async () => {
     try {
       this.showProcessing();
-      let klay = await this.createKlaytn(90000);
 
       if (!window["WebSocket"]) {
-        throw "Your browser doesn't support WebSockets";
+        throw "Your browser doesn't support WebSockets. Please use latest versions of Chrome.";
       }
 
+      if (!TransportWebUSB.isSupported()) {
+        throw "Your browser doesn't support WebUSB. Please use latest versions of Chrome.";
+      }
+
+      const transport = await TransportWebUSB.create();
+      transport.setExchangeTimeout(30000);
+
       var socket = new WebSocket(
-        "ws://localhost:8080/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
+        // "ws://localhost:8080/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
+        "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
       );
 
       socket.onclose = _event => {
@@ -142,7 +149,7 @@ class App extends Component {
         }
 
         let adpuIn = Buffer.from(evt.data, "hex");
-        klay.transport.exchange(adpuIn).then(
+        transport.exchange(adpuIn).then(
           adpuOut => {
             const adpuOutHex = adpuOut.toString("hex");
             socket.send(adpuOutHex);
@@ -185,8 +192,12 @@ class App extends Component {
         </pre>
 
         <div>
-          <h2>Install Ledger App</h2>
-          <p>Before continuing you must install app.</p>
+          <h2>Install App on Ledger</h2>
+          <p>
+            Before continuing you must install Klaytn CE application on the
+            ledger device. The installation will be done via WebUSB. It takes
+            about 2 minutes, please do not disconect device in process.
+          </p>
           <a href="#output" className="button" onClick={this.onAppInstall}>
             Install
           </a>
@@ -262,3 +273,4 @@ class App extends Component {
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));
+listen(log => console.log(log.type + ": " + log.message));
