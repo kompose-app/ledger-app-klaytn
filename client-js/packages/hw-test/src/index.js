@@ -13,7 +13,7 @@ class App extends Component {
   state = {
     result: null,
     error: null,
-    message: ""
+    message: "",
   };
 
   clear = () => {
@@ -30,7 +30,7 @@ class App extends Component {
     return btoa(
       hexString
         .match(/\w{2}/g)
-        .map(function(a) {
+        .map(function (a) {
           return String.fromCharCode(parseInt(a, 16));
         })
         .join("")
@@ -102,13 +102,13 @@ class App extends Component {
       const {
         arbitraryDataEnabled,
         kctProvisioningNecessary,
-        version
+        version,
       } = await klay.getAppConfiguration();
       this.setState({
         result:
           `[arbitraryDataEnabled=${arbitraryDataEnabled}]` +
           `[kctProvisioningNecessary=${kctProvisioningNecessary}]` +
-          `[version=${version}]`
+          `[version=${version}]`,
       });
     } catch (error) {
       this.setState({ error });
@@ -132,29 +132,29 @@ class App extends Component {
 
       var socket = new WebSocket(
         // "ws://localhost:8080/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
-        "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
+        "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn_ce/nanos_v1.1.0"
       );
 
-      socket.onclose = _event => {
+      socket.onclose = (_event) => {
         this.setState({ result: "Connection closed." });
       };
 
-      socket.onerror = e => {
+      socket.onerror = (e) => {
         throw e;
       };
 
-      socket.onmessage = function(evt) {
+      socket.onmessage = function (evt) {
         if (!evt.isTrusted) {
           throw "messages from websocket cannot be trusted";
         }
 
         let adpuIn = Buffer.from(evt.data, "hex");
         transport.exchange(adpuIn).then(
-          adpuOut => {
+          (adpuOut) => {
             const adpuOutHex = adpuOut.toString("hex");
             socket.send(adpuOutHex);
           },
-          e => {
+          (e) => {
             throw e;
           }
         );
@@ -164,7 +164,7 @@ class App extends Component {
     }
   };
 
-  onMessageChanged = async event => {
+  onMessageChanged = async (event) => {
     this.setState({ message: event.target.value });
   };
 
@@ -273,4 +273,4 @@ class App extends Component {
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));
-listen(log => console.log(log.type + ": " + log.message));
+listen((log) => console.log(log.type + ": " + log.message));

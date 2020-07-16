@@ -15,12 +15,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ********************************************************************************/
+
 //@flow
 
 import { splitPath, foreach } from "./utils";
 import type Transport from "@ledgerhq/hw-transport";
 
-const remapTransactionRelatedErrors = e => {
+const remapTransactionRelatedErrors = (e) => {
   if (e && e.statusCode === 0x6a80) {
     return "Please enable Contract data on the Klaytn app Settings";
   }
@@ -43,11 +44,11 @@ export default class Klaytn {
       this,
       [
         "getAddress",
-        "provideKctTokenInformation",
+        "provideTokenInformation",
         "signTransaction",
         "signPersonalMessage",
         "getAppConfiguration",
-        "apduExchange"
+        "apduExchange",
       ],
       scrambleKey
     );
@@ -64,7 +65,11 @@ export default class Klaytn {
     }
 
     return this.transport.send(
-      data[0], data[1], data[2], data[3], data.slice(4)
+      data[0],
+      data[1],
+      data[2],
+      data[3],
+      data.slice(4)
     );
   }
 
@@ -84,7 +89,7 @@ export default class Klaytn {
   ): Promise<{
     publicKey: string,
     address: string,
-    chainCode?: string
+    chainCode?: string,
   }> {
     let paths = splitPath(path);
     let buffer = Buffer.alloc(1 + paths.length * 4);
@@ -100,7 +105,7 @@ export default class Klaytn {
         boolChaincode ? 0x01 : 0x00,
         buffer
       )
-      .then(response => {
+      .then((response) => {
         let result = {};
         let publicKeyLength = response[0];
         let addressLength = response[1 + publicKeyLength];
@@ -128,24 +133,24 @@ export default class Klaytn {
   }
 
   /**
-   * This commands provides a trusted description of an KCT token
+   * This commands provides a trusted description of a Klaytn token
    * to associate a contract address with a ticker and number of decimals.
    *
    * It shall be run immediately before performing a transaction involving a contract
    * calling this contract address to display the proper token information to the user if necessary.
    *
-   * @param {*} info: a blob from "kct.js" utilities that contains all token information.
+   * @param {*} info: a blob from "tokens.js" utilities that contains all token information.
    *
    * @example
-   * import { byContractAddress } from "@kompose-app/hw-app-klaytn/kct"
+   * import { byContractAddress } from "@kompose-app/hw-app-klaytn/tokens"
    * const kusdInfo = byContractAddress("0x5faad3204b3ca681a6a312e15ff52a4cc76ade06")
-   * if (kusdInfo) await klay.provideKctTokenInformation(kusdInfo)
+   * if (kusdInfo) await klay.provideTokenInformation(kusdInfo)
    * const signed = await klay.signTransaction(path, rawTxHex)
    */
-  provideKctTokenInformation({ data }: { data: Buffer }): Promise<boolean> {
+  provideTokenInformation({ data }: { data: Buffer }): Promise<boolean> {
     return this.transport.send(0xe0, 0x0a, 0x00, 0x00, data).then(
       () => true,
-      e => {
+      (e) => {
         if (e && e.statusCode === 0x6d00) {
           // this case happen for older version of Klaytn app,
           // since older app version had the KCT data hardcoded, it's fine to assume it worked.
@@ -168,7 +173,7 @@ export default class Klaytn {
   ): Promise<{
     v: number,
     r: string,
-    s: string
+    s: string,
   }> {
     let paths = splitPath(path);
     let offset = 0;
@@ -199,7 +204,7 @@ export default class Klaytn {
     return foreach(toSend, (data, i) =>
       this.transport
         .send(0xe0, 0x04, i === 0 ? 0x00 : 0x80, 0x00, data)
-        .then(apduResponse => {
+        .then((apduResponse) => {
           response = apduResponse;
         })
     ).then(
@@ -209,7 +214,7 @@ export default class Klaytn {
         const s = response.slice(1 + 32, 1 + 32 + 32).toString("hex");
         return { v, r, s };
       },
-      e => {
+      (e) => {
         throw remapTransactionRelatedErrors(e);
       }
     );
@@ -219,13 +224,13 @@ export default class Klaytn {
    */
   getAppConfiguration(): Promise<{
     arbitraryDataEnabled: number,
-    kctProvisioningNecessary: number,
-    version: string
+    tokenProvisioningNecessary: number,
+    version: string,
   }> {
-    return this.transport.send(0xe0, 0x06, 0x00, 0x00).then(response => {
+    return this.transport.send(0xe0, 0x06, 0x00, 0x00).then((response) => {
       let result = {};
       result.arbitraryDataEnabled = response[0] & 0x01;
-      result.kctProvisioningNecessary = response[0] & 0x02;
+      result.tokenProvisioningNecessary = response[0] & 0x02;
       result.version = "" + response[1] + "." + response[2] + "." + response[3];
       return result;
     });
@@ -249,7 +254,7 @@ klay.signPersonalMessage("44'/8217'/0'/0/0", Buffer.from("test").toString("hex")
   ): Promise<{
     v: number,
     s: string,
-    r: string
+    r: string,
   }> {
     let paths = splitPath(path);
     let offset = 0;
@@ -286,7 +291,7 @@ klay.signPersonalMessage("44'/8217'/0'/0/0", Buffer.from("test").toString("hex")
     return foreach(toSend, (data, i) =>
       this.transport
         .send(0xe0, 0x08, i === 0 ? 0x00 : 0x80, 0x00, data)
-        .then(apduResponse => {
+        .then((apduResponse) => {
           response = apduResponse;
         })
     ).then(() => {

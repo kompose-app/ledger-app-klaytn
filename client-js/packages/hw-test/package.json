@@ -17,7 +17,6 @@
   "dependencies": {
     "@babel/runtime": "^7.9.2",
     "@kompose-app/hw-app-klaytn": "*",
-    "@ledgerhq/hw-app-btc": "^5.13.0",
     "@ledgerhq/hw-transport-u2f": "^5.13.0",
     "@ledgerhq/hw-transport-webusb": "^5.13.1",
     "@ledgerhq/logs": "^5.13.0",

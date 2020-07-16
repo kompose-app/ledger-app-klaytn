@@ -1,23 +1,24 @@
 // @flow
-import blob from "../data/kct.js";
+import blob from "../data/tokens.js";
 
 export type TokenInfo = {
+  contractName: string,
   contractAddress: string,
   ticker: string,
   decimals: number,
   chainId: number,
   signature: Buffer,
-  data: Buffer
+  data: Buffer,
 };
 
 /**
- * Klaytn KCT Tokens
+ * Klaytn Tokens
  *
  * @example
- * import KCT from "@kompose-app/hw-app-klaytn/kct";
- * const kctList = new KCT().list();
+ * import Tokens from "@kompose-app/hw-app-klaytn/tokens";
+ * const tokensList = new Tokens().list();
  */
-export default class KCT {
+export default class Tokens {
   /**
    * Retrieve the token information by a given contract address if any
    */
@@ -26,7 +27,7 @@ export default class KCT {
   }
 
   /**
-   * List all the KCT tokens informations
+   * List all the tokens informations
    */
   list(): TokenInfo[] {
     return this.get().list();
@@ -37,7 +38,7 @@ export default class KCT {
     return a.startsWith("0x") ? a : "0x" + a;
   }
 
-  // this internal get() will lazy load and cache the data from the KCT data blob
+  // this internal get() will lazy load and cache the data from the tokens data blob
   get() {
     return (() => {
       let cache;
@@ -71,7 +72,7 @@ export default class KCT {
             decimals,
             chainId,
             signature,
-            data: item
+            data: item,
           };
           entries.push(entry);
           byContract[contractAddress] = entry;
@@ -79,7 +80,7 @@ export default class KCT {
         }
         const api = {
           list: () => entries,
-          byContract: (contractAddress: string) => byContract[contractAddress]
+          byContract: (contractAddress: string) => byContract[contractAddress],
         };
         cache = api;
         return api;

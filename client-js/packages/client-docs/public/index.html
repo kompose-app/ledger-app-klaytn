@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>hw-app-klaytn 1.0.0 | Documentation</title>
+  <title>hw-app-klaytn independent | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
   <link href='assets/style.css' rel='stylesheet'>
@@ -14,7 +14,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>hw-app-klaytn</h3>
-          <div class='mb1'><code>1.0.0</code></div>
+          <div class='mb1'><code>independent</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -41,15 +41,21 @@
                       <li class='h5'><span>Instance members</span></li>
                       
                       <li><a
+                        href='#klaytnapduexchange'
+                        class='regular pre-open'>
+                        #apduExchange
+                      </a></li>
+                      
+                      <li><a
                         href='#klaytngetaddress'
                         class='regular pre-open'>
                         #getAddress
                       </a></li>
                       
                       <li><a
-                        href='#klaytnprovidekcttokeninformation'
+                        href='#klaytnprovidetokeninformation'
                         class='regular pre-open'>
-                        #provideKctTokenInformation
+                        #provideTokenInformation
                       </a></li>
                       
                       <li><a
@@ -80,21 +86,35 @@
               
                 
                 <li><a
-                  href='#bycontractaddress'
-                  class="">
-                  byContractAddress
-                  
+                  href='#tokens'
+                  class=" toggle-sibling">
+                  Tokens
+                  <span class='icon'>▸</span>
                 </a>
                 
-                </li>
-              
-                
-                <li><a
-                  href='#list'
-                  class="">
-                  list
+                <div class='toggle-target display-none'>
                   
-                </a>
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#tokensbycontractaddress'
+                        class='regular pre-open'>
+                        #byContractAddress
+                      </a></li>
+                      
+                      <li><a
+                        href='#tokenslist'
+                        class='regular pre-open'>
+                        #list
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                  
+                </div>
                 
                 </li>
               
@@ -118,7 +138,7 @@
     </h3>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/Klaytn.js#L47-L293'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L38-L304'>
       <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
       </a>
     
@@ -185,6 +205,94 @@
     <div class='py1 quiet mt1 prose-big'>Instance Members</div>
     <div class="clearfix">
   
+    <div class='border-bottom' id='klaytnapduexchange'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>apduExchange(data, APDU)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L62-L74'>
+      <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
+      </a>
+    
+  </div>
+  
+
+  <p>apduExchange allows to exchange raw APDU payloads using internal transport.</p>
+
+    <div class='pre p1 fill-light mt0'>apduExchange(data: <a href="https://nodejs.org/api/buffer.html">Buffer</a>, APDU: any): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://nodejs.org/api/buffer.html">Buffer</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>data</span> <code class='quiet'>(<a href="https://nodejs.org/api/buffer.html">Buffer</a>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>APDU</span> <code class='quiet'>(any)</code>
+	    data buffer to send
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://nodejs.org/api/buffer.html">Buffer</a>></code>:
+        APDU response data buffer
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='klaytngetaddress'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -199,7 +307,7 @@
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/Klaytn.js#L74-L122'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L85-L133'>
       <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
       </a>
     
@@ -287,11 +395,11 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='klaytnprovidekcttokeninformation'>
+    <div class='border-bottom' id='klaytnprovidetokeninformation'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>provideKctTokenInformation(info)</span>
+            <span class='code strong strong truncate'>provideTokenInformation(info)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -301,19 +409,19 @@
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/Klaytn.js#L139-L152'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L150-L163'>
       <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
       </a>
     
   </div>
   
 
-  <p>This commands provides a trusted description of an KCT token
+  <p>This commands provides a trusted description of a Klaytn token
 to associate a contract address with a ticker and number of decimals.</p>
 <p>It shall be run immediately before performing a transaction involving a contract
 calling this contract address to display the proper token information to the user if necessary.</p>
 
-    <div class='pre p1 fill-light mt0'>provideKctTokenInformation(info: any): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>></div>
+    <div class='pre p1 fill-light mt0'>provideTokenInformation(info: any): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>></div>
   
   
 
@@ -331,7 +439,7 @@ calling this contract address to display the proper token information to the use
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>info</span> <code class='quiet'>(any)</code>
-	    : a blob from "kct.js" utilities that contains all token information.
+	    : a blob from "tokens.js" utilities that contains all token information.
 
           </div>
           
@@ -381,9 +489,9 @@ calling this contract address to display the proper token information to the use
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">import</span> { byContractAddress } <span class="hljs-keyword">from</span> <span class="hljs-string">"@kompose-app/hw-app-klaytn/kct"</span>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">import</span> { byContractAddress } <span class="hljs-keyword">from</span> <span class="hljs-string">"@kompose-app/hw-app-klaytn/tokens"</span>
 <span class="hljs-keyword">const</span> kusdInfo = byContractAddress(<span class="hljs-string">"0x5faad3204b3ca681a6a312e15ff52a4cc76ade06"</span>)
-<span class="hljs-keyword">if</span> (kusdInfo) <span class="hljs-keyword">await</span> klay.provideKctTokenInformation(kusdInfo)
+<span class="hljs-keyword">if</span> (kusdInfo) <span class="hljs-keyword">await</span> klay.provideTokenInformation(kusdInfo)
 <span class="hljs-keyword">const</span> signed = <span class="hljs-keyword">await</span> klay.signTransaction(path, rawTxHex)</pre>
     
   
@@ -414,7 +522,7 @@ calling this contract address to display the proper token information to the use
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/Klaytn.js#L159-L210'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L170-L221'>
       <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
       </a>
     
@@ -504,7 +612,7 @@ calling this contract address to display the proper token information to the use
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/Klaytn.js#L214-L226'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L225-L237'>
       <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
       </a>
     
@@ -512,7 +620,7 @@ calling this contract address to display the proper token information to the use
   
 
   
-    <div class='pre p1 fill-light mt0'>getAppConfiguration(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{arbitraryDataEnabled: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, kctProvisioningNecessary: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, version: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}></div>
+    <div class='pre p1 fill-light mt0'>getAppConfiguration(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{arbitraryDataEnabled: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, tokenProvisioningNecessary: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, version: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}></div>
   
   
 
@@ -530,7 +638,7 @@ calling this contract address to display the proper token information to the use
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{arbitraryDataEnabled: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, kctProvisioningNecessary: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, version: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}></code>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{arbitraryDataEnabled: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, tokenProvisioningNecessary: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, version: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}></code>
     
   
 
@@ -566,7 +674,7 @@ calling this contract address to display the proper token information to the use
   <div class='clearfix'>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/Klaytn.js#L240-L292'>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/Klaytn.js#L251-L303'>
       <span>client-js/packages/hw-app-klaytn/src/Klaytn.js</span>
       </a>
     
@@ -666,13 +774,72 @@ v = <span class="hljs-string">"0"</span> + v;
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='bycontractaddress'>
-      byContractAddress
+    <h3 class='fl m0' id='tokens'>
+      Tokens
     </h3>
     
     
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/kct.js#L7-L8'>
-      <span>client-js/packages/hw-app-klaytn/src/kct.js</span>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/tokens.js#L21-L90'>
+      <span>client-js/packages/hw-app-klaytn/src/tokens.js</span>
+      </a>
+    
+  </div>
+  
+
+  <p>Klaytn Tokens</p>
+
+    <div class='pre p1 fill-light mt0'>new Tokens()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">import</span> Tokens <span class="hljs-keyword">from</span> <span class="hljs-string">"@kompose-app/hw-app-klaytn/tokens"</span>;
+<span class="hljs-keyword">const</span> tokensList = <span class="hljs-keyword">new</span> Tokens().list();</pre>
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='tokensbycontractaddress'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>byContractAddress(contract)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/tokens.js#L25-L27'>
+      <span>client-js/packages/hw-app-klaytn/src/tokens.js</span>
       </a>
     
   </div>
@@ -680,7 +847,7 @@ v = <span class="hljs-string">"0"</span> + v;
 
   <p>Retrieve the token information by a given contract address if any</p>
 
-    <div class='pre p1 fill-light mt0'>byContractAddress</div>
+    <div class='pre p1 fill-light mt0'>byContractAddress(contract: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): TokenInfo?</div>
   
   
 
@@ -730,29 +897,33 @@ v = <span class="hljs-string">"0"</span> + v;
   
 </section>
 
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='tokenslist'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>list()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
 
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='list'>
-      list
-    </h3>
     
-    
-      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/6e0ee0ce7016f266a9ddcf9c951c8130f8c0e61e/client-js/packages/hw-app-klaytn/src/kct.js#L13-L13'>
-      <span>client-js/packages/hw-app-klaytn/src/kct.js</span>
+      <a class='fr fill-darken0 round round pad1x quiet h5' href='https://github.com/kompose-app/ledger-app-klaytn/blob/c14207243855749c9842069426c1fd3385b95e44/client-js/packages/hw-app-klaytn/src/tokens.js#L32-L34'>
+      <span>client-js/packages/hw-app-klaytn/src/tokens.js</span>
       </a>
     
   </div>
   
 
-  <p>list all the KCT tokens informations</p>
+  <p>List all the tokens informations</p>
 
-    <div class='pre p1 fill-light mt0'>list</div>
+    <div class='pre p1 fill-light mt0'>list(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TokenInfo></div>
   
   
 
@@ -781,6 +952,18 @@ v = <span class="hljs-string">"0"</span> + v;
   
 
   
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
 
   
 

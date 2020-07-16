@@ -28,7 +28,7 @@ test("getAddress", async () => {
   );
   const transport = await Transport.open();
   const klay = new Klaytn(transport);
-  const result = await klay.getAddress("44'/8127'/0'/0'/0");
+  const result = await klay.getAddress("44'/8217'/0'/0/0");
   expect(result).toEqual({
     address: "0x0Cbe753E2C47f383EB8C9186f20B660c6E3F79AE",
     publicKey:
@@ -46,7 +46,7 @@ test("getAddress", async () => {
 //   const transport = await Transport.open();
 //   const klay = new Klaytn(transport);
 //   const result = await klay.signTransaction(
-//     "44'/8217'/0'/0'/0",
+//     "44'/8217'/0'/0/0",
 //     "e8018504e3b292008252089428ee52a8f3d6e5d15f8b131996950d7f296c7952872bd72a2487400080"
 //   );
 //   expect(result).toEqual({
@@ -66,7 +66,7 @@ test("signPersonalMessage", async () => {
   const transport = await Transport.open();
   const klay = new Klaytn(transport);
   const result = await klay.signPersonalMessage(
-    "44'/8217'/0'/0'/0",
+    "44'/8217'/0'/0/0",
     Buffer.from("test").toString("hex")
   );
   expect(result).toEqual({
