@@ -1,11 +1,14 @@
 # Klaytn Ledger App: Common Technical Specifications 
 
-Application version 1.0.0 
+Application version 1.1.0 
+
+### 1.1
+  - Upgraded to support FLOW and Nano X
+  - General refactoring from newest ethereum-app example
 
 ### 1.0
   - Initial release for Klaytn
   - Returns App Configuration
-  - Return the chain code with Public Address
   - Sign Klay Personal Message
   - KCT tokens information and defines
 

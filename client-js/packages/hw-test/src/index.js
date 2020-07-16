@@ -194,7 +194,7 @@ class App extends Component {
         <div>
           <h2>Install App on Ledger</h2>
           <p>
-            Before continuing you must install Klaytn CE application on the
+            Before continuing you must install Klaytn application on the
             ledger device. The installation will be done via WebUSB. It takes
             about 2 minutes, please do not disconect device in process.
           </p>
