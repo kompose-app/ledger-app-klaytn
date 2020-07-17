@@ -14,6 +14,7 @@ class App extends Component {
     result: null,
     error: null,
     message: "",
+    txData: "",
   };
 
   clear = () => {
@@ -68,20 +69,6 @@ class App extends Component {
     }
   };
 
-  onSignTransaction = async () => {
-    try {
-      this.showProcessing();
-      const klay = await this.createKlaytn(90000);
-      const path = "44'/8217'/0'/0/0";
-      const rawTx = "0x";
-      const { v, r, s } = await klay.signTransaction(path, rawTx);
-      const resultText = "[V=" + v + "],[R=" + r + "],[S=" + s + "]";
-      this.setState({ result: resultText });
-    } catch (error) {
-      this.setState({ error });
-    }
-  };
-
   onSignPersonalMessage = async () => {
     try {
       this.showProcessing();
@@ -90,6 +77,30 @@ class App extends Component {
       const msgHex = Buffer.from(this.state.message).toString("hex");
       const { v, r, s } = await klay.signPersonalMessage(path, msgHex);
       const resultText = "[V=" + v + "],[R=" + r + "],[S=" + s + "]";
+      this.setState({ result: resultText });
+    } catch (error) {
+      this.setState({ error });
+    }
+  };
+
+  onSignTransaction = async () => {
+    try {
+      this.showProcessing();
+      const klay = await this.createKlaytn(90000);
+      const path = "44'/8217'/0'/0/0";
+      const rawTxHex = this.state.txData;
+      let { v, r, s } = await klay.signTransaction(path, rawTxHex);
+
+      const eip55Constant = 35;
+      const eccParity = v - ((8217 * 2 + eip55Constant) % 256)
+      v = (8217 * 2 + eip55Constant) + eccParity;
+
+      let vHex = v.toString(16);
+      if (vHex.length < 2) {
+          vHex = `0${v}`;
+      }
+
+      const resultText = "[V=" + vHex + "],[R=" + r + "],[S=" + s + "]";
       this.setState({ result: resultText });
     } catch (error) {
       this.setState({ error });
@@ -169,12 +180,16 @@ class App extends Component {
     this.setState({ message: event.target.value });
   };
 
+  onTxDataChanged = async (event) => {
+    this.setState({ txData: event.target.value });
+  };
+
   onClear = async () => {
     this.clear();
   };
 
   render() {
-    const { message, result, error } = this.state;
+    const { txData, message, result, error } = this.state;
     return (
       <section>
         <h1>Ledger Klaytn App Functional Test</h1>
@@ -242,6 +257,31 @@ class App extends Component {
                 href="#output"
                 className="button"
                 onClick={this.onSignPersonalMessage}
+              >
+                Sign
+              </a>
+            </fieldset>
+          </form>
+
+          <h3>klay.signTransaction()</h3>
+          <p>
+            Signs a transaction according to <code>klay_signTransaction</code> and
+            returns V, R, S.
+          </p>
+
+          <form action="#">
+            <fieldset>
+              <label>Tx Data (Hex)</label>
+              <textarea
+                id="txField"
+                placeholder="e8018504e3b292008252089428ee52a8f3d6e5d15f8b131996950d7f296c7952872bd72a2487400080"
+                value={txData}
+                onChange={this.onTxDataChanged}
+              ></textarea>
+              <a
+                href="#output"
+                className="button"
+                onClick={this.onSignTransaction}
               >
                 Sign
               </a>

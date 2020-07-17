@@ -9,3 +9,7 @@
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
+#txField {
+	height: 160px;
+}
