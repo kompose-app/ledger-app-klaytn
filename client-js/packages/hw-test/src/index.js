@@ -127,7 +127,7 @@ class App extends Component {
     }
   };
 
-  onAppInstall = async () => {
+  onAppInstallNanoS = async () => {
     try {
       this.showProcessing();
 
@@ -145,6 +145,55 @@ class App extends Component {
       var socket = new WebSocket(
         // "ws://localhost:8080/apiws/v1/appInstall/klaytn/nanos_v1.1.0"
         "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn/nanos_v1.1.0"
+      );
+
+      socket.onclose = (_event) => {
+        this.setState({ result: "Connection closed." });
+      };
+
+      socket.onerror = (e) => {
+        throw e;
+      };
+
+      socket.onmessage = function (evt) {
+        if (!evt.isTrusted) {
+          throw "messages from websocket cannot be trusted";
+        }
+
+        let adpuIn = Buffer.from(evt.data, "hex");
+        transport.exchange(adpuIn).then(
+          (adpuOut) => {
+            const adpuOutHex = adpuOut.toString("hex");
+            socket.send(adpuOutHex);
+          },
+          (e) => {
+            throw e;
+          }
+        );
+      };
+    } catch (error) {
+      this.setState({ error });
+    }
+  };
+
+  onAppInstallBlue = async () => {
+    try {
+      this.showProcessing();
+
+      if (!window["WebSocket"]) {
+        throw "Your browser doesn't support WebSockets. Please use latest versions of Chrome.";
+      }
+
+      if (!TransportWebUSB.isSupported()) {
+        throw "Your browser doesn't support WebUSB. Please use latest versions of Chrome.";
+      }
+
+      const transport = await TransportWebUSB.create();
+      transport.setExchangeTimeout(30000);
+
+      var socket = new WebSocket(
+        // "ws://localhost:8080/apiws/v1/appInstall/klaytn/blue_v1.1.0"
+        "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn/blue_v1.1.0"
       );
 
       socket.onclose = (_event) => {
@@ -211,12 +260,22 @@ class App extends Component {
           <h2>Install App on Ledger</h2>
           <p>
             Before continuing you must install Klaytn application on the
-            ledger device. The installation will be done via WebUSB. It takes
+            ledger device (pick one). The installation will be done via WebUSB. It takes
             about 2 minutes, please do not disconect device in process.
           </p>
-          <a href="#output" className="button" onClick={this.onAppInstall}>
-            Install
+          <table>
+          <tr>
+          <td>
+          <a href="#output" className="button" onClick={this.onAppInstallNanoS}>
+            Ledger Nano S
           </a>
+          </td><td>
+          <a href="#output" className="button" onClick={this.onAppInstallBlue}>
+            Ledger Blue
+          </a>
+          </td>
+           </tr>
+          </table>
         </div>
 
         <div>
