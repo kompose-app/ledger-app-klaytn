@@ -101,13 +101,13 @@ class App extends Component {
       const klay = await this.createKlaytn();
       const {
         arbitraryDataEnabled,
-        kctProvisioningNecessary,
+        tokenProvisioningNecessary,
         version,
       } = await klay.getAppConfiguration();
       this.setState({
         result:
           `[arbitraryDataEnabled=${arbitraryDataEnabled}]` +
-          `[kctProvisioningNecessary=${kctProvisioningNecessary}]` +
+          `[tokenProvisioningNecessary=${tokenProvisioningNecessary}]` +
           `[version=${version}]`,
       });
     } catch (error) {
