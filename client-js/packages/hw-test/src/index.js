@@ -51,6 +51,7 @@ class App extends Component {
       const path = "44'/8217'/0'/0/0";
       const { publicKey, address, chainCode } = await klay.getAddress(
         path,
+        true,
         true
       );
       const resultText =
