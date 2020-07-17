@@ -131,8 +131,8 @@ class App extends Component {
       transport.setExchangeTimeout(30000);
 
       var socket = new WebSocket(
-        // "ws://localhost:8080/apiws/v1/appInstall/klaytn_ce/nanos_v1.0.0"
-        "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn_ce/nanos_v1.1.0"
+        // "ws://localhost:8080/apiws/v1/appInstall/klaytn/nanos_v1.1.0"
+        "wss://ledger-installer.kompose.app/apiws/v1/appInstall/klaytn/nanos_v1.1.0"
       );
 
       socket.onclose = (_event) => {
