@@ -30,8 +30,8 @@ typedef struct tokenDefinition_t {
 
 #ifdef HAVE_TOKENS_LIST
 
-#define NUM_TOKENS_KLAYTN 2
-#define NUM_TOKENS_KLAYTN_TESTNET 1
+#define NUM_TOKENS_KLAYTN 23
+#define NUM_TOKENS_KLAYTN_TESTNET 3
 
 extern tokenDefinition_t const TOKENS_KLAYTN[NUM_TOKENS_KLAYTN];
 extern tokenDefinition_t const TOKENS_KLAYTN_TESTNET[NUM_TOKENS_KLAYTN_TESTNET];
